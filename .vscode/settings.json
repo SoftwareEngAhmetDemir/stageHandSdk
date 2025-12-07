@@ -1,0 +1,61 @@
+{
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          "keyword.control.python",
+          "keyword.other.python",
+          "storage.modifier.async.python",
+          "keyword.operator.await.python",
+          "keyword.async.python",
+          "keyword.declaration.python"
+        ],
+        "settings": { "foreground": "#FF4500", "fontStyle": "bold" }
+      },
+      {
+        "scope": [
+          "support.class.python",
+          "entity.name.type.class.python",
+          "meta.generic-name.python",
+          "entity.name.class.python",
+          "meta.function-call.generic.python",
+          "meta.import.python variable.other.readwrite.python",
+          "meta.import-name.python"
+        ],
+        "settings": {
+          "foreground": "#1E90FF",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "scope": "entity.name.function.python",
+        "settings": { "foreground": "#00CED1", "fontStyle": "bold" }
+      },
+      {
+        "scope": [
+          "variable.other.readwrite.python",
+          "variable.parameter.python",
+          "variable.other.python",
+          "meta.indexed-name.python"
+        ],
+        "settings": { "foreground": "#1E90FF" }
+      },
+      {
+        "scope": "support.function.builtin.python",
+        "settings": { "foreground": "#32CD32" }
+      },
+      {
+        "scope": "constant.numeric.python",
+        "settings": { "foreground": "#FF69B4" }
+      },
+      {
+        "scope": "string.quoted.python",
+        "settings": { "foreground": "#ADFF2F" }
+      },
+      {
+        "scope": "comment.line.python",
+        "settings": { "foreground": "#808080", "fontStyle": "italic" }
+      }
+    ]
+  }
+}
