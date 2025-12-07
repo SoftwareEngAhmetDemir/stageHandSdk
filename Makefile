@@ -40,6 +40,20 @@ create:
 	echo "PARAMETER temperature 0.7" >> "$(MODEL_DIR)/$(word 2,$(MAKECMDGOALS))"; \
 	echo "✓ Modelfile '$(word 2,$(MAKECMDGOALS))' created in $(MODEL_DIR)!"
 
+# Create a custom model via Ollama
+register:
+	@if [ "$(word 2,$(MAKECMDGOALS))" = "" ]; then \
+		echo "Usage: make register <modelfile-name>"; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(MODEL_DIR)/$(word 2,$(MAKECMDGOALS))" ]; then \
+		echo "File '$(word 2,$(MAKECMDGOALS))' doesn't exist in $(MODEL_DIR)!"; \
+		exit 1; \
+	fi
+	@echo "Creating Ollama model '$(word 2,$(MAKECMDGOALS))' from modelfile..."
+	@ollama create $(word 2,$(MAKECMDGOALS)) -f "$(MODEL_DIR)/$(word 2,$(MAKECMDGOALS))"
+	@echo "✓ Model '$(word 2,$(MAKECMDGOALS))' created successfully!"
+
 # List all modelfiles in MODEL_DIR
 list:
 	@echo "Modelfiles in $(MODEL_DIR):"
@@ -100,3 +114,4 @@ help:
 #make clean my_firstModel
 #make help
 #make install
+#make register my_firstModel

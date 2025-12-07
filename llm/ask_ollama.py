@@ -1,29 +1,13 @@
 from typing import List
 from ollama import Client
-from ..schemas import Message  # ✅ Fixed
+from schemas import Message
+import asyncio
 
-async def ask_ollama(model_name: str, messages: List[Message]) -> str:
-    
+async def ask_ollama(model_name: str, messages: List[dict]) -> str:
     client = Client()
     
-    response = await client.chat(model=model_name, messages=messages)
+    # Wrap sync client.chat in a thread
+    response = await asyncio.to_thread(lambda: client.chat(model=model_name, messages=messages))
+    
+    # Ollama response object has .message['content']
     return response['message']['content']
-
-
-
-# Example usage:
-# import asyncio
-# from ..schemas import Message
-
-# async def main():
-    # conversation = [
-    #     Message(role="user", content="Hello!"),
-    #     Message(role="assistant", content="Hi there!"),
-    #     Message(role="user", content="How are you?")
-    # ]
-
-    # reply = await ask_ollama("llama2", conversation)
-    # print(reply)
-
-# if __name__ == "__main__":
-#    asyncio.run(main())
