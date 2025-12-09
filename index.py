@@ -10,7 +10,7 @@ async def main():
     conversation = [
     {"role": "system", "content": SYSTEM_PROMPT_TEXT},
     {"role": "assistant", "content": ASSISTANT_TEXT},
-    {"role": "user", "content": "Go to https://www.facebook.com/reg/ , fill firstname with ahmet and last name with demir."},
+    {"role": "user", "content": "Go to https://www.facebook.com/reg/ , fill firstname with ahmet and last name with demir ,select gender as female ,click 'sign up' button."},
     ]
 
     reply = await ask_ollama(modelText, conversation)
