@@ -1,19 +1,10 @@
 import asyncio
 from playwright.async_api import async_playwright
-from playWright.deep_text_selector import new_context_with_deep_text, deep_text_fill, deep_text_click,deep_text_radio
-
-# Safe wrappers to prevent crashes
-async def safe_deep_text_fill(page, text, value):
-    try:
-        await deep_text_fill(page, text, value)
-    except Exception as e:
-        print(f"[Warning] Failed to fill '{text}': {e}")
-
-async def safe_deep_text_click(page, text):
-    try:
-        await deep_text_click(page, text)
-    except Exception as e:
-        print(f"[Warning] Failed to click '{text}': {e}")
+from playWright.deep_text_selector import (
+    new_context_with_deep_text,
+   deep_text_auto_fill
+    
+)
 
 async def main():
     browser = None
@@ -22,23 +13,24 @@ async def main():
             browser = await p.chromium.launch(headless=False)
             context, page = await new_context_with_deep_text(browser)
 
-            # Navigate safely
             try:
                 await page.goto("https://www.facebook.com/reg/", wait_until="load")
             except Exception as e:
                 print(f"[Warning] Navigation failed: {e}")
                 return
 
-            # Fill the signup form
-            await safe_deep_text_fill(page, "First name", "Ahmet")
-            await safe_deep_text_fill(page, "Surname", "Demir")
-
-           # Select gender using deep_text_radio
-            await deep_text_radio(page, "male")
-           
-
-            # Click 'Sign Up' button
-            await safe_deep_text_click(page, "Sign Up")
+            await deep_text_auto_fill(page, {
+                "First name": "Ahmet",
+                "Surname": "Demir",
+                "Gender": "Female",
+                "Day": "20",
+                "Month": "Oct",
+                "Year": "1990",
+                "Mobile number or email address":"1234567890",
+                "New password":"SecureP@ssw0rd!",
+                "password":"SecureP@ssw0rd!",
+                "Sign Up": "@click"
+            })
 
             print("Waiting 50 seconds before closing browser...")
             await asyncio.sleep(50)

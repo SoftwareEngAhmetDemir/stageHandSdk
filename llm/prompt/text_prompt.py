@@ -15,7 +15,7 @@ User: Go to https://www.facebook.com/reg/ and fill the signup form using deep-te
 Assistant:
 import asyncio
 from playwright.async_api import async_playwright
-from playWright.deep_text_selector import new_context_with_deep_text, deep_text_fill, deep_text_click,deep_text_radio
+from playWright.deep_text_selector import new_context_with_deep_text, deep_text_fill, deep_text_click,deep_text_radio_or_select
 
 # Safe wrappers to prevent crashes
 async def safe_deep_text_fill(page, text, value):
@@ -49,7 +49,7 @@ async def main():
             await safe_deep_text_fill(page, "Surname", "Demir")
 
            # Select gender using deep_text_radio
-            await deep_text_radio(page, "male")
+            await deep_text_radio_or_select(page, "Gender", "Male")
            
 
             # Click 'Sign Up' button
