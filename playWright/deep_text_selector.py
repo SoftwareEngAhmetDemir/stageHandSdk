@@ -1,5 +1,5 @@
 from typing import Optional
-from playwright.async_api import Browser, BrowserContext, Page, ElementHandle
+from playwright.async_api import Browser, BrowserContext, Page, ElementHandle,TimeoutError
 
 async def new_context_with_deep_text(browser: Browser, **kwargs):
     """
@@ -195,6 +195,9 @@ async def deep_text_radio_or_select(page: Page, label: str, option: str):
     print(f"[Warning] Could not select '{option}' for '{label}'")
     return False
 
+
+
+
 async def deep_text_auto_fill(page: Page, instructions: dict):
     """
     Universal form filler.
@@ -212,24 +215,47 @@ async def deep_text_auto_fill(page: Page, instructions: dict):
     """
     for field, value in instructions.items():
         try:
-            # Click button if value="@click"
+            # ---------------- Click handler ----------------
             if isinstance(value, str) and value.strip().lower() == "@click":
-                from playwright.async_api import TimeoutError
                 try:
-                    handle = await page.query_selector(f"text={field}")
-                    if handle:
-                        await handle.click()
+                    # 1️⃣ Try locator with force click
+                    handle = page.locator(f"text='{field}'").first
+                    if await handle.count() > 0:
+                        await handle.scroll_into_view_if_needed()
+                        await handle.click(force=True)
+                        print(f"[OK] Clicked element containing text: {field}")
                         continue
-                except TimeoutError:
-                    print(f"[Warning] Could not click button '{field}'")
-                    continue
 
-            # Boolean -> checkbox
+                    # 2️⃣ Fallback: click via JS (works even if nested spans/images inside)
+                    clicked = await page.evaluate("""
+                        (text) => {
+                            const normalize = s => (s||'').trim();
+                            const elements = [...document.querySelectorAll('button, a, div, span')];
+                            for (const el of elements) {
+                                if (normalize(el.innerText) === text) {
+                                    el.scrollIntoView({behavior:'smooth', block:'center'});
+                                    el.click();
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                    """, field)
+                    if clicked:
+                        print(f"[OK] Clicked element via JS containing text: {field}")
+                        continue
+
+                    print(f"[Warning] Could not find element to click for '{field}'")
+                except Exception as e:
+                    print(f"[Warning] Could not click '{field}': {e}")
+                continue  # move to next instruction
+
+            # ---------------- Checkbox handler ----------------
             if isinstance(value, bool):
                 await deep_text_checkbox(page, field, value)
                 continue
 
-            # For strings/numbers: try radio/select first, fallback to input
+            # ---------------- Radio / Select / Input handler ----------------
             str_value = str(value)
             success = await deep_text_radio_or_select(page, field, str_value)
             if not success:
