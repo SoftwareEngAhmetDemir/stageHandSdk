@@ -14,23 +14,21 @@ async def main():
             context, page = await new_context_with_deep_text(browser)
 
             try:
-                await page.goto("https://www.facebook.com/reg/", wait_until="load")
+                await page.goto("https://www.geeksforgeeks.org/", wait_until="load")
             except Exception as e:
                 print(f"[Warning] Navigation failed: {e}")
                 return
 
             await deep_text_auto_fill(page, {
-                "First name": "Ahmet",
-                "Surname": "Demir",
-                "Gender": "Female",
-                "Day": "20",
-                "Month": "Oct",
-                "Year": "1990",
-                "Mobile number or email address":"1234567890",
-                "New password":"SecureP@ssw0rd!",
-                "password":"SecureP@ssw0rd!",
-                "Sign Up": "@click"
-            })
+    "Sign In": "@click",
+
+    "Username or Email": "Ahmet",
+
+    "Password": "Demir",
+
+    "Sign In": "@click"
+})
+
 
             print("Waiting 50 seconds before closing browser...")
             await asyncio.sleep(50)
